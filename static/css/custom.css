@@ -1,0 +1,18 @@
+body {
+    background: #ecf0f1 !important;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+    text-decoration: none;
+    color: inherit !important;
+}
+a.navbar-brand{
+    color: white !important;
+}
+.container {
+    margin-top: 100px;
+}
+

@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block fcast %} {% if appData %}
+<div class="card p-4 mt-4">
+    <div class="text-right">
+        <button type="button" class="btn pull-right btn-outline-info">
+            <a href ="/downloadData">
+            Download
+        </a>
+        </button>
+    </div>
+    <div id="chart" class="chart"></div>
+</div>
+    <script>
+        var graphs = {{ appData['graphJSON'] | safe}};
+        Plotly.plot('chart', graphs, {});
+    </script>
+{% endif %} {% endblock %}
