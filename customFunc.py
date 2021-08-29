@@ -1,6 +1,6 @@
 import pickle
 import numpy as np
-
+from datetime import timedelta
 
 def getForecast(store,fcastDays,startDate,endDate):
     model = pickle.load(open('model/'+store+'.sav', 'rb'))
@@ -13,6 +13,7 @@ def getForecast(store,fcastDays,startDate,endDate):
     forecast = forecast[forecast['ds'] >= startDate]
     forecast = forecast[forecast['ds'] <= endDate]
     forecast['yhat'] = np.where(forecast['yhat']<0,0,forecast['yhat'])
+    forecast['ds'] = forecast['ds'] + timedelta(hours=2)
     return forecast
 
 def formatForecast(forecast):
