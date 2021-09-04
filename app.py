@@ -17,7 +17,7 @@ appData = {}
 
 app = Flask(__name__)
 app.secret_key = 'Bunforecast'
-app.debug = False
+app.debug = True
 ###############################################################################
 # getting data 
 ###############################################################################
@@ -67,6 +67,38 @@ def runModel():
     appData['graphJSON'] = graphJSON
 
     return render_template("index.html", appData=appData)
+
+
+
+
+@app.route("/runModelJSON")
+def runModelJSON():
+    store = request.args.get('store', type = str)
+    if store :  
+        fcastDays = request.args.get('fcastDays', default = '4', type = str)
+        startDate = request.args.get('startDate', default = datetime.now().strftime("%Y-%m-%d"), type = str)
+        startDate = datetime.strptime(startDate,'%Y-%m-%d')
+        startDate = datetime(startDate.year, startDate.month, startDate.day)
+        endDate = startDate + timedelta(days=int(fcastDays)+1)
+        forecast = customFunc.getForecast(store,fcastDays,startDate,endDate)
+        finalForecast = customFunc.formatForecast(forecast)
+
+        output = {}
+        output['store'] = store
+        output['fcastDays'] = fcastDays
+        output['startDate'] = startDate
+        output['Forecast'] = finalForecast.to_dict('records')
+        output = json.dumps(output, indent=4,default=str)
+    else : 
+        tempDict = {}
+        tempDict["Expected URL"] = "/runModelJSON?store=storeName/fcastDays=Number of Days/startDate= start date in YYYY-MM-DD"
+        tempDict["Default Params"] = "fcastDays = 4 and startDate = today"
+        tempDict["Example URL"] = ["/runModelJSON?store=Arese","/runModelJSON?store=Arese/fcastDays=4","/runModelJSON?store=Arese/fcastDays=4/startDate=2021-09-01"]
+
+        output = {}
+        output["Error"] = "Store variable is not provided"
+        output["Resolution"] = tempDict
+    return output
 
 
 
