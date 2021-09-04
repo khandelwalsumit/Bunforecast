@@ -4,10 +4,13 @@ from datetime import timedelta
 
 def getForecast(store,fcastDays,startDate,endDate):
     model = pickle.load(open('model/'+store+'.sav', 'rb'))
-    fcastHorizon = int(fcastDays) + 100
+    fcastHorizon = int(fcastDays) + 45
     future = model.make_future_dataframe(periods=fcastHorizon * 24,freq='h',include_history=False)
     future = future[(future['ds'].dt.hour > 9) & (future['ds'].dt.hour <= 20)]
+    future = future[future['ds'] >= startDate]
+    future = future[future['ds'] <= endDate]
     forecast = model.predict(future)
+
     forecast = forecast[['ds','yhat']]
     forecast = forecast[forecast['ds'] >= startDate]
     forecast = forecast[forecast['ds'] <= endDate]
